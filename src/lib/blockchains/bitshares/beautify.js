@@ -3831,8 +3831,8 @@ export default async function beautify(
             (assRes) => assRes.id === opContents.fee.asset_id
         );
 
-        if (ownerAccount && deltaAmount) {
-            currentOperation["rows"] = [
+        if (ownerAccount) {
+            const _temp = [
                 {
                     key: "owner_account",
                     params: {
@@ -3841,16 +3841,6 @@ export default async function beautify(
                     },
                 },
                 { key: "offer_id", params: { offer_id: opContents.offer_id } },
-                {
-                    key: "delta_amount",
-                    params: {
-                        delta_amount: formatAsset(
-                            opContents.delta_amount.amount,
-                            deltaAmount.symbol,
-                            deltaAmount.precision
-                        ),
-                    },
-                },
                 { key: "fee_rate", params: { fee_rate: opContents.fee_rate } },
                 {
                     key: "max_duration_seconds",
@@ -3902,6 +3892,21 @@ export default async function beautify(
                     },
                 },
             ];
+            if (deltaAmount) {
+                _temp.push(
+                    {
+                        key: "delta_amount",
+                        params: {
+                            delta_amount: formatAsset(
+                                opContents.delta_amount.amount,
+                                deltaAmount.symbol,
+                                deltaAmount.precision
+                            ),
+                        },
+                    }
+                )
+            }
+            currentOperation["rows"] = _temp;
         }
     } else if (opType == 72) {
         // credit_offer_accept
